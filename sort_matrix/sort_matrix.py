@@ -5,9 +5,30 @@
 """ sort_matrix_columns application. """
 
 from collections import namedtuple
-import ipdb
+# import ipdb
+import sys
 
 Index = namedtuple('Index', 'x1 x2')
+
+
+def find_sort_indexes(number_list):
+    index_number_list = []
+    for i, item in enumerate(number_list):
+        index_number_list.append([item, i])
+    index_number_list = sorted(index_number_list, key=lambda x: x[0])
+    sorted_indexes = []
+    for item in index_number_list:
+        sorted_indexes.append(item[1])
+    return sorted_indexes
+
+
+
+def extract_matrix(string):
+    matrix = []
+    rows = string.split('|')
+    for row in rows:
+        matrix.append(row.split())
+    return matrix
 
 
 def update_matrix(matrix, matrix_subset, indexes):
@@ -50,23 +71,37 @@ def find_equal(matrix):
 
 
 def sort_columns(matrix):
-    pass
+    sorted_indexes = find_sort_indexes(matrix[0])
+    new_matrix = []
+    for row in matrix:
+        new_row = []
+        for index in sorted_indexes:
+            new_row.append(row[index])
+        new_matrix.append(new_row)
+    return new_matrix
 
 
 def sort_matrix_columns(matrix):
-        matrix = sort_columns(matrix)
-        duplicit_indexes_list = find_equal(matrix)
-        if duplicit_indexes_list:
-            for duplicit_indexes in duplicit_indexes_list:
-                matrix_subset = get_matrix_subset(matrix, duplicit_indexes)
-                matrix_subset_sorted = sort_matrix_columns(matrix_subset)
-                matrix = update_matrix(matrix, matrix_subset_sorted, duplicit_indexes)
+    new_matrix = sort_columns(matrix)
+    duplicit_indexes_list = find_equal(new_matrix)
+    if duplicit_indexes_list:
+        for duplicit_indexes in duplicit_indexes_list:
+            matrix_subset = get_matrix_subset(new_matrix, duplicit_indexes)
+            matrix_subset_sorted = sort_matrix_columns(matrix_subset)
+            new_matrix = update_matrix(new_matrix, matrix_subset_sorted, duplicit_indexes)
+    return new_matrix
 
 
 def main():
-    """ TODO: main function description."""
-    matrix = [[0, 4, 4], [3, 3, 3], [3, 3, 3]]
-    print(find_equal(matrix))
+    with open(sys.argv[1], 'r') as test_cases:
+        for test in test_cases:
+            if test[-1] == '\n':
+                test = test[:-1]
+            if test:
+                matrix = extract_matrix(test)
+                print(matrix)
+                matrix = sort_matrix_columns(matrix)
+                print(matrix)
 
 
 if __name__ == "__main__":
