@@ -2,10 +2,9 @@
 # Author: Ondrej Zapletal
 # Date: 12/07/2016
 # Description:
-""" sort_matrix_columns application. """
+""" sort_matrix application. """
 
 from collections import namedtuple
-# import ipdb
 import sys
 
 Index = namedtuple('Index', 'x1 x2')
@@ -22,27 +21,30 @@ def find_sort_indexes(number_list):
     return sorted_indexes
 
 
-
 def extract_matrix(string):
     matrix = []
     rows = string.split('|')
     for row in rows:
-        matrix.append(row.split())
+        number_row = []
+        for item in row.split():
+            number_row.append(int(item))
+        matrix.append(number_row)
     return matrix
 
 
 def update_matrix(matrix, matrix_subset, indexes):
     new_matrix = list(matrix)
     for i, line in enumerate(matrix[1:]):
-        for n, item in enumerate(line[indexes.x1:indexes.x2]):
-            new_matrix[i][n] = matrix_subset[i-1][n-indexes.x1]
+        for n, item in enumerate(line[indexes.x1:indexes.x2+1]):
+            new_matrix[i+1][n+indexes.x1] = matrix_subset[i][n]
     return new_matrix
 
 
 def get_matrix_subset(matrix, indexes):
     new_matrix = []
     for line in matrix[1:]:
-        new_matrix.append(line[indexes.x1:indexes.x2])
+        line_to_add = line[indexes.x1:indexes.x2+1]
+        new_matrix.append(line_to_add)
     return new_matrix
 
 
@@ -81,14 +83,18 @@ def sort_columns(matrix):
     return new_matrix
 
 
-def sort_matrix_columns(matrix):
+def sort_matrix(matrix):
     new_matrix = sort_columns(matrix)
     duplicit_indexes_list = find_equal(new_matrix)
+
     if duplicit_indexes_list:
         for duplicit_indexes in duplicit_indexes_list:
+
             matrix_subset = get_matrix_subset(new_matrix, duplicit_indexes)
-            matrix_subset_sorted = sort_matrix_columns(matrix_subset)
-            new_matrix = update_matrix(new_matrix, matrix_subset_sorted, duplicit_indexes)
+            matrix_subset_sorted = sort_matrix(matrix_subset)
+            new_matrix_updated = update_matrix(new_matrix, matrix_subset_sorted, duplicit_indexes)
+
+        return new_matrix_updated
     return new_matrix
 
 
@@ -99,9 +105,14 @@ def main():
                 test = test[:-1]
             if test:
                 matrix = extract_matrix(test)
-                print(matrix)
-                matrix = sort_matrix_columns(matrix)
-                print(matrix)
+                matrix = sort_matrix(matrix)
+                line_result = ""
+                for line in matrix:
+                    item_result = ""
+                    for item in line:
+                        item_result += " " + str(item)
+                    line_result += " " +  item_result.strip() + " |"
+                print(line_result[:-1].strip())
 
 
 if __name__ == "__main__":
