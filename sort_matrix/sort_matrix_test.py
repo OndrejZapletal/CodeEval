@@ -6,7 +6,7 @@
 
 import unittest
 from collections import namedtuple
-from sort_matrix import find_equal
+from sort_matrix import find_equal, update_matrix, get_matrix_subset
 
 Index = namedtuple('Index', 'x1 x2')
 
@@ -54,3 +54,22 @@ class MainTest(unittest.TestCase):
         matrix = [[4, 3, 3, 4, 4, 0]]
         result = find_equal(matrix)
         self.assertEqual(result, [Index(x1=1, x2=2), Index(x1=3, x2=4)])
+
+    def test_update_matrix_1(self):
+        """ Docstring """
+        matrix = [[4, 3], [4, 0]]
+        submatrix = [[5]]
+        result = update_matrix(matrix, submatrix, Index(x1=0, x2=1))
+        self.assertEqual(result, [[4, 3], [5, 0]])
+
+    def test_get_matrix_subset_1(self):
+        """ Docstring """
+        matrix = [[4, 3], [4, 0]]
+        result = get_matrix_subset(matrix, Index(x1=0, x2=1))
+        self.assertEqual(result, [[4]])
+
+    def test_get_matrix_subset_2(self):
+        """ Docstring """
+        matrix = [[4, 3, 1], [4, 1, 3], [4, 3, 2]]
+        result = get_matrix_subset(matrix, Index(x1=1, x2=3))
+        self.assertEqual(result, [[1, 3], [3, 2]])

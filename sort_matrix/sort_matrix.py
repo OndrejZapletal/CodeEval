@@ -11,11 +11,18 @@ Index = namedtuple('Index', 'x1 x2')
 
 
 def update_matrix(matrix, matrix_subset, indexes):
-    pass
+    new_matrix = list(matrix)
+    for i, line in enumerate(matrix[1:]):
+        for n, item in enumerate(line[indexes.x1:indexes.x2]):
+            new_matrix[i][n] = matrix_subset[i-1][n-indexes.x1]
+    return new_matrix
 
 
 def get_matrix_subset(matrix, indexes):
-    pass
+    new_matrix = []
+    for line in matrix[1:]:
+        new_matrix.append(line[indexes.x1:indexes.x2])
+    return new_matrix
 
 
 def find_equal(matrix):
